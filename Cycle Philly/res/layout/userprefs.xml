@@ -317,7 +317,7 @@
             android:layout_marginLeft="15sp"
             android:layout_marginRight="5sp"
             android:layout_marginTop="20sp"
-            android:text="Email address: for news and updates!!"
+            android:text="Email address: for news and suprises!!"
             android:textStyle="bold" >
         </TextView>
 

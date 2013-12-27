@@ -37,9 +37,14 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import org.phillyopen.mytracks.cyclephilly.R;
+
+import com.testflightapp.lib.TestFlight;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -57,6 +62,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class SaveTrip extends Activity {
+	final Context context = this;
 	long tripid;
 	HashMap <Integer, ToggleButton> purpButtons = new HashMap<Integer,ToggleButton>();
 	String purpose = "";
@@ -143,14 +149,31 @@ public class SaveTrip extends Activity {
 		final Button btnDiscard = (Button) findViewById(R.id.ButtonDiscard);
 		btnDiscard.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(getBaseContext(), "Trip discarded.",	Toast.LENGTH_SHORT).show();
-
-				cancelRecording();
-
-				Intent i = new Intent(SaveTrip.this, MainInput.class);
-				i.putExtra("keepme", true);
-				startActivity(i);
-				SaveTrip.this.finish();
+			    	
+		        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		        builder.setMessage("Are you sure you want to discard this trip?")
+	               .setCancelable(true)
+	               .setPositiveButton("Discard", new DialogInterface.OnClickListener() {
+	                   public void onClick(final DialogInterface dialog, final int id) {
+	                	   Toast.makeText(getBaseContext(), "Trip discarded.",	Toast.LENGTH_SHORT).show();
+	
+		       				cancelRecording();
+	
+		       				Intent i = new Intent(SaveTrip.this, MainInput.class);
+		       				i.putExtra("keepme", true);
+		       				startActivity(i);
+		       				SaveTrip.this.finish();
+		       				TestFlight.passCheckpoint("User Saved a Trip");
+	                   }
+	               })
+	               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	                   public void onClick(final DialogInterface dialog, final int id) {
+	                	   TestFlight.passCheckpoint("User Discarded a Trip");
+	                        dialog.cancel();
+	                   }
+	               });
+		        final AlertDialog alert = builder.create();
+		        alert.show();
 			}
 		});
 
